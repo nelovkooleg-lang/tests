@@ -1,12 +1,16 @@
-import unittest
+import pytest
 from main3 import circle_area
 
-class TestCircleAreaFixed(unittest.TestCase):
-    def test_current_behavior(self):
-
-        area, length = circle_area(6)
-        self.assertAlmostEqual(area, 78.5)
-        self.assertAlmostEqual(length, 31.4)
-
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.parametrize(
+    'r, expected_area, expected_lenght',
+    [
+        (5, 78.5, 31.4),
+        (),
+        (),
+        (),
+    ],
+)
+def test_circle_area(r,expected_area, expected_lenght):
+    area, lenght = circle_area(r)
+    assert area == pytest.approx(expected_area, abs=1e-2)
+    assert lenght == pytest.approx(expected_lenght, abs=1e-2)
