@@ -13,3 +13,9 @@ def check_folder_exists(token, folder_name):
     params = {"path": folder_name}
     response = requests.get(BASE_URL, headers=headers, params=params)
     return response.status_code
+
+def delete_folder(token, folder_name):
+    headers = {"Authorization": f"OAuth {token}"}
+    params = {"path": folder_name, 'permanently': 'true'}
+    response = requests.delete(BASE_URL, headers=headers, params=params)
+    return response.status_code
