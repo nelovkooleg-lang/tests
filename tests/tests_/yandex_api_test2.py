@@ -1,21 +1,30 @@
+import os
 import unittest
-from yandex_api2 import create_folder, check_folder_exists
+from yandex_api2 import create_folder, check_folder_exists, delete_folder
 
-TOKEN = "ВАШ_ТОКЕН_ЯНДЕКС_ДИСКА"
+TOKEN = os.getenv('YANDEX_TOKEN')
 
 class TestYandexDiskAPI(unittest.TestCase):
     def setUp(self):
         self.folder_name = "Test_Folder_Autotest"
-
+        if TOKEN:
+            delete_folder(TOKEN, self.folder_name)
+    def tearDown(self):
+        if TOKEN:
+            delete_folder(TOKEN, self.folder_name)
+    @unittest.skipUnless(TOKEN, 'не задана переменная окружения YANDEX_TOKEN')
     def test_create_folder_success(self):
         # 1. Создание новой папки (API возвращает 201 Created)
         status = create_folder(TOKEN, self.folder_name)
         self.assertEqual(status, 201)
 
         # 2. Проверка, что папка появилась (GET-запрос возвращает 200 OK)
-        exists_status = check_folder_exists(TOKEN, self.folder_name)
+        exists_status, data = check_folder_exists(TOKEN, self.folder_name)
         self.assertEqual(exists_status, 200)
-
+        self.assertEqual(data.get('type'), 'dir')
+        self.assertEqual(data.get('name'), self.folder_name)
+        
+    @unittest.skipUnless(TOKEN, 'не задана переменная окружения YANDEX_TOKEN')
     def test_create_folder_already_exists(self):
         # Отрицательный тест: попытка создать уже существующую папку (ошибка 409)
         create_folder(TOKEN, self.folder_name)
