@@ -6,7 +6,8 @@ TOKEN = os.getenv('YANDEX_TOKEN')
 
 class TestYandexDiskAPI(unittest.TestCase):
     def setUp(self):
-        self.folder_name = "Test_Folder_Autotest"
+        self.folder_name = 'Test_Folder_Autotest'
+        self.folder.path = f'disk:/{self.folder.name}'
         if TOKEN:
             delete_folder(TOKEN, self.folder_name)
     def tearDown(self):
